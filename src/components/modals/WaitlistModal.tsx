@@ -9,11 +9,13 @@ import { motion, AnimatePresence } from "framer-motion";
 export function WaitlistModal() {
   const { isWaitlistModalOpen, setWaitlistModalOpen } = useAppStore();
   const [status, setStatus] = React.useState<"idle" | "loading" | "success" | "error">("idle");
+  const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
   const [formData, setFormData] = React.useState({ name: "", email: "", role: "" });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("loading");
+    setErrorMessage(null);
     
     try {
       const response = await fetch("/api/waitlist", {
@@ -22,12 +24,16 @@ export function WaitlistModal() {
         body: JSON.stringify(formData)
       });
       
+      const data = await response.json().catch(() => ({}));
+      
       if (response.ok) {
         setStatus("success");
       } else {
+        setErrorMessage(data.error || "System error. Failed to register access request.");
         setStatus("error");
       }
     } catch (error) {
+      setErrorMessage("Network error. Please try again.");
       setStatus("error");
     }
   };
@@ -112,7 +118,7 @@ export function WaitlistModal() {
 
               {status === "error" && (
                 <div className="text-red-400 text-sm py-2 border-l-2 border-red-500 pl-3 bg-red-500/10">
-                  System error. Failed to register access request.
+                  {errorMessage || "System error. Failed to register access request."}
                 </div>
               )}
 
