@@ -30,7 +30,7 @@ export async function POST(request: Request) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'Zythera Waitlist <onboarding@resend.dev>',
+        from: 'Zythera <support@zythera.co.in>',
         to: ['support@zythera.co.in'], 
         subject: `Zythera Waitlist: New entry from ${name}`,
         html: `
