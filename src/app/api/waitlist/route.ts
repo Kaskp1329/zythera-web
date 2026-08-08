@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import nodemailer from 'nodemailer';
+
+export const runtime = 'edge'; // Ensure compatibility with Cloudflare Pages
 
 export async function POST(request: Request) {
   try {
@@ -10,47 +11,46 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Name and email are required' }, { status: 400 });
     }
 
-    // Initialize nodemailer transporter
-    // User needs to set SMTP_USER and SMTP_PASS in .env file
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.SMTP_USER || 'placeholder@gmail.com',
-        pass: process.env.SMTP_PASS || 'placeholder-password',
-      },
-    });
+    const resendApiKey = process.env.RESEND_API_KEY;
 
-    const mailOptions = {
-      from: process.env.SMTP_USER || 'placeholder@gmail.com',
-      to: 'support@zythera.co.in', // User's requested email
-      subject: `Zythera Waitlist: New entry from ${name}`,
-      text: `
-        A new user has joined the Zythera waitlist:
-        
-        Name: ${name}
-        Email: ${email}
-        Role/Company: ${role || 'Not provided'}
-      `,
-      html: `
-        <h2>New Zythera Waitlist Entry</h2>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Role/Company:</strong> ${role || 'Not provided'}</p>
-      `,
-    };
-
-    // If environment variables are not set, we'll log it and return success for the demo
-    if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
-      console.warn('SMTP credentials not configured. Mocking email send to support@zythera.co.in:', body);
+    if (!resendApiKey) {
+      console.warn('RESEND_API_KEY not configured. Mocking email send to support@zythera.co.in:', body);
       // Wait for a simulated network delay
       await new Promise((resolve) => setTimeout(resolve, 800));
       return NextResponse.json({ success: true, mocked: true });
     }
 
-    await transporter.sendMail(mailOptions);
+    // Send email using Resend REST API
+    // Note: If you haven't verified your domain in Resend, you MUST use 'onboarding@resend.dev' as the 'from' address
+    // and you can only send emails TO the email address you registered your Resend account with.
+    const response = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${resendApiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: 'Zythera Waitlist <onboarding@resend.dev>',
+        to: ['support@zythera.co.in'], 
+        subject: `Zythera Waitlist: New entry from ${name}`,
+        html: `
+          <h2>New Zythera Waitlist Entry</h2>
+          <p><strong>Name:</strong> ${name}</p>
+          <p><strong>Email:</strong> ${email}</p>
+          <p><strong>Role/Company:</strong> ${role || 'Not provided'}</p>
+        `,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Resend API Error:', errorData);
+      return NextResponse.json({ error: 'Failed to process waitlist request via Resend' }, { status: response.status });
+    }
+
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Error sending waitlist email:', error);
-    return NextResponse.json({ error: 'Failed to process waitlist request' }, { status: 500 });
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
