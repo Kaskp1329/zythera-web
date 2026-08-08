@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+:root {
+  --background: #000000;
+  --foreground: #ffffff;
+  
+  --color-pure-black: #000000;
+  --color-quantum-orange: #ff6a00;
+  --color-orange-glow: #ff8c00;
+  --color-hot-orange: #ffb347;
+  --color-gold-highlight: #ffd700;
+  
+  --color-white-secondary: rgba(255,255,255,0.65);
+  --color-white-dim: rgba(255,255,255,0.35);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  
+  --color-pure-black: var(--color-pure-black);
+  --color-quantum-orange: var(--color-quantum-orange);
+  --color-orange-glow: var(--color-orange-glow);
+  --color-hot-orange: var(--color-hot-orange);
+  --color-gold-highlight: var(--color-gold-highlight);
+  --color-white-secondary: var(--color-white-secondary);
+  --color-white-dim: var(--color-white-dim);
+
+  --font-sans: var(--font-inter), sans-serif;
+  --font-orbitron: var(--font-orbitron), sans-serif;
+  --font-mono: var(--font-jetbrains-mono), monospace;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
+/* Glassmorphism utilities */
+.glass-panel {
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 106, 0, 0.15);
+}
+
+.glass-panel-orange {
+  background: rgba(255, 106, 0, 0.05);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 106, 0, 0.3);
+  box-shadow: 0 0 20px rgba(255, 106, 0, 0.1);
+}
+
+/* Glowing text */
+.text-glow-orange {
+  text-shadow: 0 0 10px rgba(255, 106, 0, 0.6), 0 0 20px rgba(255, 106, 0, 0.3);
+}
+
+/* Grid overlay */
+.bg-grid-pattern {
+  background-size: 40px 40px;
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+}
