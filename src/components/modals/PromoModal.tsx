@@ -25,7 +25,7 @@ export function PromoModal() {
           playsInline
         >
           {/* User has the video, they will replace the src below */}
-          <source src="/placeholder-promo.mp4" type="video/mp4" />
+          <source src="/promo.mp4" type="video/mp4" />
           <p className="text-white">Your browser does not support HTML5 video.</p>
         </video>
         
