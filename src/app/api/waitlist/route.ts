@@ -22,7 +22,7 @@ export async function POST(request: Request) {
 
     const mailOptions = {
       from: process.env.SMTP_USER || 'placeholder@gmail.com',
-      to: 'ap3435189@gmail.com', // User's requested email
+      to: 'support@zythera.co.in', // User's requested email
       subject: `Zythera Waitlist: New entry from ${name}`,
       text: `
         A new user has joined the Zythera waitlist:
@@ -41,7 +41,7 @@ export async function POST(request: Request) {
 
     // If environment variables are not set, we'll log it and return success for the demo
     if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
-      console.warn('SMTP credentials not configured. Mocking email send to ap3435189@gmail.com:', body);
+      console.warn('SMTP credentials not configured. Mocking email send to support@zythera.co.in:', body);
       // Wait for a simulated network delay
       await new Promise((resolve) => setTimeout(resolve, 800));
       return NextResponse.json({ success: true, mocked: true });
