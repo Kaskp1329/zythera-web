@@ -22,6 +22,8 @@ export const metadata: Metadata = {
   description: "Zythera is an autonomous execution engine built to reason, plan, remember, use tools, orchestrate agents, and execute real-world tasks.",
 };
 
+import { NoticeBanner } from "@/components/ui/NoticeBanner";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -32,6 +34,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${orbitron.variable} ${jetbrainsMono.variable} antialiased bg-pure-black text-foreground min-h-screen`}
       >
+        <NoticeBanner />
         {children}
       </body>
     </html>
